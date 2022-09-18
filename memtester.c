@@ -143,7 +143,7 @@ int main(int argc, char **argv) {
     /* If MEMTESTER_TEST_MASK is set, we use its value as a mask of which
        tests we run.
      */
-    if (env_testmask = getenv("MEMTESTER_TEST_MASK")) {
+    if ((env_testmask = getenv("MEMTESTER_TEST_MASK"))) {
         errno = 0;
         testmask = strtoul(env_testmask, 0, 0);
         if (errno) {
@@ -243,6 +243,7 @@ int main(int argc, char **argv) {
             memshift = 20; /* megabytes */
             break;
         default:
+            memshift = 0; /* bytes*/
             /* bad suffix */
             usage(argv[0]); /* doesn't return */
     }
@@ -317,7 +318,7 @@ int main(int argc, char **argv) {
             fflush(stdout);
             if ((size_t) buf % pagesize) {
                 /* printf("aligning to page -- was 0x%tx\n", buf); */
-                aligned = (void volatile *) ((size_t) buf & pagesizemask) + pagesize;
+                aligned = (void volatile *) (((size_t) buf & pagesizemask) + pagesize);
                 /* printf("  now 0x%tx -- lost %d bytes\n", aligned,
                  *      (size_t) aligned - (size_t) buf);
                  */
@@ -370,7 +371,7 @@ int main(int argc, char **argv) {
        define out the use of mlock() (cough HP/UX 10 cough). */
     if ((size_t) buf % pagesize) {
         /* printf("aligning to page -- was 0x%tx\n", buf); */
-        aligned = (void volatile *) ((size_t) buf & pagesizemask) + pagesize;
+        aligned = (void volatile *) (((size_t) buf & pagesizemask) + pagesize);
         /* printf("  now 0x%tx -- lost %d bytes\n", aligned,
          *      (size_t) aligned - (size_t) buf);
          */
